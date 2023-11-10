@@ -144,7 +144,36 @@ async function run() {
 
     // services related api
     app.get('/services', logger, async (req, res) => {
-        const cursor = serviceCollection.find();
+        const filter = req.query
+        console.log( filter)
+        const query = {
+          // 100 tkr kom price show krbe
+          // price: {$lt: 100}
+
+          // 100 tkr kom ba soman price show krbe
+          // price: {$lt: 100}
+
+          // 100 tkr besi price show krbe
+          // price: {$gt: 100}
+
+          // 100 tkr kom 50 tkr besi price show krbe
+          // price: {$lt: 100, $gt: 50}
+
+          // 100 tkr soman na amon price show krbe
+          // price: {$gt: 100}
+
+          // 100 tkr besi ba soman tkr price show krbe
+          // price: {$gte: 100}
+
+          // for search field
+          title: {$regex: filter.search, $options: 'i'}
+        };
+        const options = {
+          sort: {
+            price: filter.sort === 'asc' ? 1 : -1,  
+          }
+        };
+        const cursor = serviceCollection.find(query, options);
         const result = await cursor.toArray();
         res.send(result);
     })
